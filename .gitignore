@@ -1,0 +1,15 @@
+.env
+*.env.local
+target/
+*.class
+*.jar
+*.war
+.DS_Store
+*.log
+.idea/
+*.iml
+.vscode/
+node_modules/
+.gradle/
+build/
+out/
