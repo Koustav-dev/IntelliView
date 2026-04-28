@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: intelliview-backend
+    runtime: java
+    buildCommand: mvn clean package -DskipTests
+    startCommand: java -Xmx450m -jar target/intelliview-backend-1.0.0.jar
+    plan: free
+    healthCheckPath: /api/actuator/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: PORT
+        value: "8080"
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
