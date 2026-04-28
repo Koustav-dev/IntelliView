@@ -42,6 +42,9 @@ spring:
           max-idle: 8
           min-idle: 0
 
+  cache:
+    type: none
+
   mail:
     host: smtp.gmail.com
     port: 587

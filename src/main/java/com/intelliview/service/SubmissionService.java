@@ -62,13 +62,15 @@ public class SubmissionService {
                 problem.getTitle(), problem.getDescription()
         );
 
-        // Update submission with results
+        // Determine if code passed all test cases via AI review
         boolean allPassed = false;
         if (aiReview.containsKey("allTestCasesPassed") && aiReview.get("allTestCasesPassed") instanceof Boolean) {
             allPassed = (Boolean) aiReview.get("allTestCasesPassed");
-        } else if (aiReview.containsKey("correctness") && aiReview.get("correctness").toString().toLowerCase().contains("correct")) {
-            allPassed = true;
         }
+
+        // Check if this is first acceptance BEFORE updating status
+        boolean firstAccepted = allPassed &&
+                !submissionRepo.existsByUserAndProblemAndStatus(user, problem, CodeSubmission.Status.ACCEPTED);
 
         submission.setStatus(allPassed ? CodeSubmission.Status.ACCEPTED : CodeSubmission.Status.WRONG_ANSWER);
         submission.setRuntimeMs(result.runtimeMs());
@@ -78,6 +80,7 @@ public class SubmissionService {
         submission.setOutput(result.output());
         submission.setErrorMessage(allPassed ? null : "Code failed some test cases or constraints according to AI review.");
         submission.setAiCodeReview(aiReview);
+
 
         // Extract AI analysis fields
         if (aiReview.containsKey("timeComplexity")) {
@@ -95,17 +98,13 @@ public class SubmissionService {
 
         submission = submissionRepo.save(submission);
 
-        // Update user stats if accepted
-        if (submission.getStatus() == CodeSubmission.Status.ACCEPTED) {
-            boolean firstAccepted = !submissionRepo.existsByUserAndProblemAndStatus(
-                    user, problem, CodeSubmission.Status.ACCEPTED
-            );
-            if (firstAccepted) {
-                userRepo.incrementProblemsSolved(user.getId());
-                updateDailyMetrics(user, problem.getDifficulty());
-                updateStreak(user);
-            }
+        // Update user stats if this is the first accepted submission for this problem
+        if (submission.getStatus() == CodeSubmission.Status.ACCEPTED && firstAccepted) {
+            userRepo.incrementProblemsSolved(user.getId());
+            updateDailyMetrics(user, problem.getDifficulty());
+            updateStreak(user);
         }
+
 
         // Update problem stats
         updateProblemStats(problem, submission);

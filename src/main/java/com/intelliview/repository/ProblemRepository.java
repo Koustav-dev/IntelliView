@@ -23,19 +23,28 @@ public interface ProblemRepository extends JpaRepository<Problem, UUID> {
 
     Page<Problem> findByCategoryAndIsActiveTrue(String category, Pageable pageable);
 
-    @Query("SELECT p FROM Problem p WHERE p.isActive = true AND :company MEMBER OF p.companies")
+    // Native query using PostgreSQL ANY() for TEXT[] column — JDBC parameter binding compatible
+    @Query(value = "SELECT * FROM problems WHERE is_active = true AND :company = ANY(companies)",
+           countQuery = "SELECT COUNT(*) FROM problems WHERE is_active = true AND :company = ANY(companies)",
+           nativeQuery = true)
     Page<Problem> findByCompany(@Param("company") String company, Pageable pageable);
 
-    @Query("SELECT p FROM Problem p WHERE p.isActive = true AND " +
-           "(:tag MEMBER OF p.tags OR p.title LIKE %:search% OR p.category LIKE %:search%)")
-    Page<Problem> searchProblems(@Param("search") String search, @Param("tag") String tag, Pageable pageable);
+    // Search by title or category
+    @Query(value = "SELECT * FROM problems WHERE is_active = true AND " +
+           "(title ILIKE '%' || :search || '%' OR category ILIKE '%' || :search || '%' OR :search = ANY(tags))",
+           countQuery = "SELECT COUNT(*) FROM problems WHERE is_active = true AND " +
+           "(title ILIKE '%' || :search || '%' OR category ILIKE '%' || :search || '%' OR :search = ANY(tags))",
+           nativeQuery = true)
+    Page<Problem> searchProblems(@Param("search") String search, Pageable pageable);
 
-    @Query("SELECT p FROM Problem p WHERE p.isActive = true AND p.difficulty = :difficulty " +
-           "AND :company MEMBER OF p.companies")
+    // Find by difficulty and company — uses ANY() for proper JDBC binding, LIMIT as int param
+    @Query(value = "SELECT * FROM problems WHERE is_active = true " +
+           "AND difficulty = :difficulty AND :company = ANY(companies) LIMIT :limit",
+           nativeQuery = true)
     List<Problem> findByDifficultyAndCompany(
-        @Param("difficulty") Problem.Difficulty difficulty,
+        @Param("difficulty") String difficulty,
         @Param("company") String company,
-        Pageable pageable);
+        @Param("limit") int limit);
 
     @Query("SELECT COUNT(p) FROM Problem p WHERE p.difficulty = :difficulty AND p.isActive = true")
     long countByDifficulty(@Param("difficulty") Problem.Difficulty difficulty);

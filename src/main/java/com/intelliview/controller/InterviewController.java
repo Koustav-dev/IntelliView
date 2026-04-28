@@ -84,10 +84,22 @@ public class InterviewController {
     public ResponseEntity<ApiResponse<Map<String, Object>>> submitBehavioral(
             @AuthenticationPrincipal User user,
             @RequestBody Map<String, Object> body) {
-        UUID questionId = UUID.fromString((String) body.get("questionId"));
+        String questionIdStr = (String) body.get("questionId");
+        String questionText = (String) body.get("questionText"); // for AI-generated questions
         UUID sessionId = body.get("sessionId") != null ? UUID.fromString((String) body.get("sessionId")) : null;
         String response = (String) body.get("response");
-        Map<String, Object> result = interviewService.submitBehavioralResponse(user, questionId, sessionId, response);
+
+        Map<String, Object> result;
+        // Handle AI-generated questions that have no DB record
+        boolean looksLikeUUID = questionIdStr != null &&
+            questionIdStr.matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
+        if (looksLikeUUID) {
+            UUID questionId = UUID.fromString(questionIdStr);
+            result = interviewService.submitBehavioralResponse(user, questionId, sessionId, response);
+        } else {
+            // AI-generated question — analyze directly without DB lookup
+            result = interviewService.analyzeResponseDirectly(questionText != null ? questionText : "Behavioral question", response);
+        }
         return ResponseEntity.ok(ApiResponse.success("Response analyzed", result));
     }
 

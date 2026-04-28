@@ -87,6 +87,10 @@ public class GroqAIService {
                 "overallFeedback": "Comprehensive overall feedback",
                 "optimizedApproach": "Brief description of optimal approach"
             }
+            
+            IMPORTANT:
+            - Set "allTestCasesPassed" to true ONLY IF the code has PERFECT correctness, handles ALL edge cases (nulls, empty arrays, limits), has no logical or syntax errors, and exactly matches the requested time/space complexity if specified. If there is ANY bug or flaw, set it to false.
+            - Provide your response ONLY as valid JSON. Do not add markdown backticks outside or any conversational text.
             """;
 
         String userMessage = String.format(

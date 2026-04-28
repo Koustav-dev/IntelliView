@@ -18,12 +18,12 @@ public interface BehavioralQuestionRepository extends JpaRepository<BehavioralQu
 
     Page<BehavioralQuestion> findByCategoryAndIsActiveTrue(String category, Pageable pageable);
 
-    @Query("SELECT bq FROM BehavioralQuestion bq WHERE bq.isActive = true AND :company MEMBER OF bq.companies")
+    // Use native PostgreSQL ANY() for TEXT[] companies column
+    @Query(value = "SELECT * FROM behavioral_questions WHERE is_active = true AND :company = ANY(companies)",
+           nativeQuery = true)
     List<BehavioralQuestion> findByCompany(@Param("company") String company);
 
     @Query(value = "SELECT * FROM behavioral_questions WHERE is_active = true ORDER BY RANDOM() LIMIT :count",
            nativeQuery = true)
     List<BehavioralQuestion> findRandomQuestions(@Param("count") int count);
-
-    List<String> findDistinctCategoryByIsActiveTrue();
 }

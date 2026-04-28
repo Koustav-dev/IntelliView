@@ -134,10 +134,9 @@ public class CodeExecutionService {
     }
 
     private boolean hasLikelyBug(String code) {
-        // Heuristic: check for common beginner mistakes
-        return code.contains("while(true)") ||
-               code.contains("while (true)") ||
-               (code.contains("for") && !code.contains("break") && !code.contains("return"));
+        // Only flag obvious infinite loops — NOT normal for-loops which are valid
+        return (code.contains("while(true)") || code.contains("while (true)"))
+               && !code.contains("break") && !code.contains("return");
     }
 
     private String generateSampleOutput(String language, int passed, int total) {

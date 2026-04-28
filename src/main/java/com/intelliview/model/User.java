@@ -3,7 +3,9 @@ package com.intelliview.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+
 
 @Entity
 @Table(name = "users")
@@ -47,10 +50,12 @@ public class User implements UserDetails {
     @Column(name = "linkedin_url")
     private String linkedinUrl;
 
-    @ElementCollection
-    @CollectionTable(name = "user_target_companies", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "company")
+    // Native PostgreSQL TEXT[] — matches schema (target_companies TEXT[])
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "target_companies", columnDefinition = "text[]")
+    @Builder.Default
     private List<String> targetCompanies = new ArrayList<>();
+
 
     @Column(name = "experience_level")
     @Enumerated(EnumType.STRING)

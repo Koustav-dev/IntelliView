@@ -44,9 +44,9 @@ public class UserMetric {
     @Builder.Default
     private Integer timeSpentMinutes = 0;
 
-    @ElementCollection
-    @CollectionTable(name = "metric_languages", joinColumns = @JoinColumn(name = "metric_id"))
-    @Column(name = "language")
+    // Native PostgreSQL TEXT[] — matches schema (languages_used TEXT[])
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "languages_used", columnDefinition = "text[]")
     @Builder.Default
     private List<String> languagesUsed = new ArrayList<>();
 

@@ -296,9 +296,231 @@ public class DataSeeder implements CommandLineRunner {
                 .acceptanceRate(new BigDecimal("41.5"))
                 .build());
 
+        // Problem 8 - Maximum Subarray
+        problems.add(Problem.builder()
+                .title("Maximum Subarray")
+                .slug("maximum-subarray")
+                .description("Given an integer array `nums`, find the subarray with the largest sum, and return its sum.")
+                .difficulty(Problem.Difficulty.MEDIUM)
+                .category("Dynamic Programming")
+                .tags(Arrays.asList("Array", "Divide and Conquer", "Dynamic Programming"))
+                .companies(Arrays.asList("Amazon", "Microsoft", "Google", "Apple"))
+                .constraints("- 1 <= nums.length <= 10^5\n- -10^4 <= nums[i] <= 10^4")
+                .examples(List.of(Map.of("input", "nums = [-2,1,-3,4,-1,2,1,-5,4]", "output", "6", "explanation", "The subarray [4,-1,2,1] has the largest sum 6.")))
+                .hints(Arrays.asList("Think about Kadane's algorithm.", "At each step, decide: start a new subarray or extend the current one."))
+                .solutionTemplate(Map.of("java", "class Solution {\n    public int maxSubArray(int[] nums) {\n        \n    }\n}", "python", "class Solution:\n    def maxSubArray(self, nums: List[int]) -> int:\n        pass"))
+                .timeComplexity("O(n)").spaceComplexity("O(1)")
+                .acceptanceRate(new BigDecimal("50.3"))
+                .build());
+
+        // Problem 9 - Merge Two Sorted Lists
+        problems.add(Problem.builder()
+                .title("Merge Two Sorted Lists")
+                .slug("merge-two-sorted-lists")
+                .description("Merge two sorted linked lists and return it as a sorted list. The list should be made by splicing together the nodes of the first two lists.")
+                .difficulty(Problem.Difficulty.EASY)
+                .category("Linked List")
+                .tags(Arrays.asList("Linked List", "Recursion"))
+                .companies(Arrays.asList("Amazon", "Microsoft", "Google", "Apple", "TCS"))
+                .constraints("- The number of nodes in both lists is in the range [0, 50].\n- -100 <= Node.val <= 100")
+                .examples(List.of(Map.of("input", "l1 = [1,2,4], l2 = [1,3,4]", "output", "[1,1,2,3,4,4]")))
+                .hints(Arrays.asList("Use a dummy head node.", "Compare current nodes and advance the pointer of the smaller one."))
+                .solutionTemplate(Map.of("java", "class Solution {\n    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {\n        \n    }\n}", "python", "class Solution:\n    def mergeTwoLists(self, list1, list2):\n        pass"))
+                .timeComplexity("O(n+m)").spaceComplexity("O(1)")
+                .acceptanceRate(new BigDecimal("62.8"))
+                .build());
+
+        // Problem 10 - Best Time to Buy and Sell Stock
+        problems.add(Problem.builder()
+                .title("Best Time to Buy and Sell Stock")
+                .slug("best-time-to-buy-and-sell-stock")
+                .description("You are given an array `prices` where `prices[i]` is the price of a given stock on the i-th day. You want to maximize your profit by choosing a single day to buy and a single day to sell. Return the maximum profit you can achieve.")
+                .difficulty(Problem.Difficulty.EASY)
+                .category("Sliding Window")
+                .tags(Arrays.asList("Array", "Dynamic Programming"))
+                .companies(Arrays.asList("Amazon", "Facebook", "Microsoft", "Google", "Goldman Sachs"))
+                .constraints("- 1 <= prices.length <= 10^5\n- 0 <= prices[i] <= 10^4")
+                .examples(List.of(Map.of("input", "prices = [7,1,5,3,6,4]", "output", "5", "explanation", "Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.")))
+                .hints(Arrays.asList("Track the minimum price seen so far.", "At each step, calculate profit if sold today."))
+                .solutionTemplate(Map.of("java", "class Solution {\n    public int maxProfit(int[] prices) {\n        \n    }\n}", "python", "class Solution:\n    def maxProfit(self, prices: List[int]) -> int:\n        pass"))
+                .timeComplexity("O(n)").spaceComplexity("O(1)")
+                .acceptanceRate(new BigDecimal("54.2"))
+                .build());
+
+        // Problem 11 - Maximum Depth of Binary Tree
+        problems.add(Problem.builder()
+                .title("Maximum Depth of Binary Tree")
+                .slug("maximum-depth-of-binary-tree")
+                .description("Given the root of a binary tree, return its maximum depth. A binary tree's maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.")
+                .difficulty(Problem.Difficulty.EASY)
+                .category("Trees")
+                .tags(Arrays.asList("Tree", "DFS", "BFS", "Binary Tree"))
+                .companies(Arrays.asList("Amazon", "Google", "Microsoft", "TCS"))
+                .constraints("- The number of nodes in the tree is in the range [0, 10^4].\n- -100 <= Node.val <= 100")
+                .examples(List.of(Map.of("input", "root = [3,9,20,null,null,15,7]", "output", "3")))
+                .hints(Arrays.asList("Use recursion: depth = 1 + max(left, right).", "Base case: null node returns 0."))
+                .solutionTemplate(Map.of("java", "class Solution {\n    public int maxDepth(TreeNode root) {\n        \n    }\n}", "python", "class Solution:\n    def maxDepth(self, root) -> int:\n        pass"))
+                .timeComplexity("O(n)").spaceComplexity("O(h)")
+                .acceptanceRate(new BigDecimal("73.9"))
+                .build());
+
+        // Problem 12 - Climbing Stairs
+        problems.add(Problem.builder()
+                .title("Climbing Stairs")
+                .slug("climbing-stairs")
+                .description("You are climbing a staircase. It takes `n` steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?")
+                .difficulty(Problem.Difficulty.EASY)
+                .category("Dynamic Programming")
+                .tags(Arrays.asList("Math", "Dynamic Programming", "Memoization"))
+                .companies(Arrays.asList("Amazon", "Google", "Microsoft", "Apple", "TCS"))
+                .constraints("- 1 <= n <= 45")
+                .examples(List.of(Map.of("input", "n = 3", "output", "3", "explanation", "1+1+1, 1+2, 2+1")))
+                .hints(Arrays.asList("This is a Fibonacci-like problem.", "dp[i] = dp[i-1] + dp[i-2]"))
+                .solutionTemplate(Map.of("java", "class Solution {\n    public int climbStairs(int n) {\n        \n    }\n}", "python", "class Solution:\n    def climbStairs(self, n: int) -> int:\n        pass"))
+                .timeComplexity("O(n)").spaceComplexity("O(1)")
+                .acceptanceRate(new BigDecimal("52.1"))
+                .build());
+
+        // Problem 13 - Number of Islands
+        problems.add(Problem.builder()
+                .title("Number of Islands")
+                .slug("number-of-islands")
+                .description("Given an `m x n` 2D binary grid which represents a map of '1's (land) and '0's (water), return the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically.")
+                .difficulty(Problem.Difficulty.MEDIUM)
+                .category("Graph")
+                .tags(Arrays.asList("Array", "DFS", "BFS", "Union Find", "Matrix"))
+                .companies(Arrays.asList("Amazon", "Google", "Facebook", "Microsoft", "Bloomberg"))
+                .constraints("- m == grid.length\n- n == grid[i].length\n- 1 <= m, n <= 300\n- grid[i][j] is '0' or '1'")
+                .examples(List.of(Map.of("input", "grid = [[\"1\",\"1\",\"0\"],[\"1\",\"1\",\"0\"],[\"0\",\"0\",\"1\"]]", "output", "2")))
+                .hints(Arrays.asList("Use DFS/BFS to mark all connected land cells.", "Each new unvisited '1' starts a new island."))
+                .solutionTemplate(Map.of("java", "class Solution {\n    public int numIslands(char[][] grid) {\n        \n    }\n}", "python", "class Solution:\n    def numIslands(self, grid: List[List[str]]) -> int:\n        pass"))
+                .timeComplexity("O(m*n)").spaceComplexity("O(m*n)")
+                .acceptanceRate(new BigDecimal("56.7"))
+                .build());
+
+        // Problem 14 - 3Sum
+        problems.add(Problem.builder()
+                .title("3Sum")
+                .slug("3sum")
+                .description("Given an integer array `nums`, return all the triplets `[nums[i], nums[j], nums[k]]` such that `i != j, i != k, j != k`, and `nums[i] + nums[j] + nums[k] == 0`. The solution set must not contain duplicate triplets.")
+                .difficulty(Problem.Difficulty.MEDIUM)
+                .category("Two Pointers")
+                .tags(Arrays.asList("Array", "Two Pointers", "Sorting"))
+                .companies(Arrays.asList("Amazon", "Facebook", "Google", "Microsoft", "Apple"))
+                .constraints("- 3 <= nums.length <= 3000\n- -10^5 <= nums[i] <= 10^5")
+                .examples(List.of(Map.of("input", "nums = [-1,0,1,2,-1,-4]", "output", "[[-1,-1,2],[-1,0,1]]")))
+                .hints(Arrays.asList("Sort the array first.", "Fix one element, then use two pointers for the remaining two.", "Skip duplicates to avoid repeated triplets."))
+                .solutionTemplate(Map.of("java", "class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        \n    }\n}", "python", "class Solution:\n    def threeSum(self, nums: List[int]) -> List[List[int]]:\n        pass"))
+                .timeComplexity("O(n²)").spaceComplexity("O(1)")
+                .acceptanceRate(new BigDecimal("33.7"))
+                .build());
+
+        // Problem 15 - Merge Intervals
+        problems.add(Problem.builder()
+                .title("Merge Intervals")
+                .slug("merge-intervals")
+                .description("Given an array of `intervals` where `intervals[i] = [start_i, end_i]`, merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.")
+                .difficulty(Problem.Difficulty.MEDIUM)
+                .category("Intervals")
+                .tags(Arrays.asList("Array", "Sorting"))
+                .companies(Arrays.asList("Amazon", "Google", "Facebook", "Microsoft", "Bloomberg"))
+                .constraints("- 1 <= intervals.length <= 10^4\n- intervals[i].length == 2\n- 0 <= start_i <= end_i <= 10^4")
+                .examples(List.of(Map.of("input", "intervals = [[1,3],[2,6],[8,10],[15,18]]", "output", "[[1,6],[8,10],[15,18]]")))
+                .hints(Arrays.asList("Sort by start time.", "If current interval overlaps with previous, merge them."))
+                .solutionTemplate(Map.of("java", "class Solution {\n    public int[][] merge(int[][] intervals) {\n        \n    }\n}", "python", "class Solution:\n    def merge(self, intervals: List[List[int]]) -> List[List[int]]:\n        pass"))
+                .timeComplexity("O(n log n)").spaceComplexity("O(n)")
+                .acceptanceRate(new BigDecimal("47.3"))
+                .build());
+
+        // Problem 16 - Product of Array Except Self
+        problems.add(Problem.builder()
+                .title("Product of Array Except Self")
+                .slug("product-of-array-except-self")
+                .description("Given an integer array `nums`, return an array `answer` such that `answer[i]` is equal to the product of all the elements of `nums` except `nums[i]`. You must write an algorithm that runs in O(n) time and without using the division operation.")
+                .difficulty(Problem.Difficulty.MEDIUM)
+                .category("Arrays & Hashing")
+                .tags(Arrays.asList("Array", "Prefix Sum"))
+                .companies(Arrays.asList("Amazon", "Facebook", "Google", "Apple"))
+                .constraints("- 2 <= nums.length <= 10^5\n- -30 <= nums[i] <= 30")
+                .examples(List.of(Map.of("input", "nums = [1,2,3,4]", "output", "[24,12,8,6]")))
+                .hints(Arrays.asList("Use prefix products from the left.", "Then multiply by suffix products from the right.", "You can do this in-place in the result array."))
+                .solutionTemplate(Map.of("java", "class Solution {\n    public int[] productExceptSelf(int[] nums) {\n        \n    }\n}", "python", "class Solution:\n    def productExceptSelf(self, nums: List[int]) -> List[int]:\n        pass"))
+                .timeComplexity("O(n)").spaceComplexity("O(1)")
+                .acceptanceRate(new BigDecimal("65.4"))
+                .build());
+
+        // Problem 17 - Min Stack
+        problems.add(Problem.builder()
+                .title("Min Stack")
+                .slug("min-stack")
+                .description("Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.")
+                .difficulty(Problem.Difficulty.MEDIUM)
+                .category("Stack")
+                .tags(Arrays.asList("Stack", "Design"))
+                .companies(Arrays.asList("Amazon", "Google", "Microsoft", "Bloomberg"))
+                .constraints("- -2^31 <= val <= 2^31 - 1\n- Methods pop, top and getMin will always be called on non-empty stacks.\n- At most 3 * 10^4 calls will be made to push, pop, top, and getMin.")
+                .examples(List.of(Map.of("input", "MinStack minStack = new MinStack();\nminStack.push(-2);\nminStack.push(0);\nminStack.push(-3);\nminStack.getMin(); // return -3\nminStack.pop();\nminStack.top(); // return 0\nminStack.getMin(); // return -2", "output", "[null,null,null,null,-3,null,0,-2]")))
+                .hints(Arrays.asList("Keep a parallel stack that tracks the minimum at each level.", "When you push, also push the current min onto the min stack."))
+                .solutionTemplate(Map.of("java", "class MinStack {\n    public MinStack() {\n        \n    }\n    public void push(int val) {\n        \n    }\n    public void pop() {\n        \n    }\n    public int top() {\n        \n    }\n    public int getMin() {\n        \n    }\n}", "python", "class MinStack:\n    def __init__(self):\n        pass\n    def push(self, val: int) -> None:\n        pass\n    def pop(self) -> None:\n        pass\n    def top(self) -> int:\n        pass\n    def getMin(self) -> int:\n        pass"))
+                .timeComplexity("O(1)").spaceComplexity("O(n)")
+                .acceptanceRate(new BigDecimal("52.8"))
+                .build());
+
+        // Problem 18 - Coin Change
+        problems.add(Problem.builder()
+                .title("Coin Change")
+                .slug("coin-change")
+                .description("You are given an integer array `coins` representing coins of different denominations and an integer `amount` representing a total amount of money. Return the fewest number of coins that you need to make up that amount. If that amount cannot be made up, return -1.")
+                .difficulty(Problem.Difficulty.MEDIUM)
+                .category("Dynamic Programming")
+                .tags(Arrays.asList("Array", "Dynamic Programming", "BFS"))
+                .companies(Arrays.asList("Amazon", "Google", "Apple", "Goldman Sachs"))
+                .constraints("- 1 <= coins.length <= 12\n- 1 <= coins[i] <= 2^31 - 1\n- 0 <= amount <= 10^4")
+                .examples(List.of(Map.of("input", "coins = [1,5,11], amount = 11", "output", "1", "explanation", "11 = 11")))
+                .hints(Arrays.asList("Use bottom-up DP.", "dp[i] = min coins to make amount i.", "dp[0] = 0, try each coin for each amount."))
+                .solutionTemplate(Map.of("java", "class Solution {\n    public int coinChange(int[] coins, int amount) {\n        \n    }\n}", "python", "class Solution:\n    def coinChange(self, coins: List[int], amount: int) -> int:\n        pass"))
+                .timeComplexity("O(amount * coins)").spaceComplexity("O(amount)")
+                .acceptanceRate(new BigDecimal("42.9"))
+                .build());
+
+        // Problem 19 - Trapping Rain Water
+        problems.add(Problem.builder()
+                .title("Trapping Rain Water")
+                .slug("trapping-rain-water")
+                .description("Given `n` non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.")
+                .difficulty(Problem.Difficulty.HARD)
+                .category("Two Pointers")
+                .tags(Arrays.asList("Array", "Two Pointers", "Dynamic Programming", "Stack", "Monotonic Stack"))
+                .companies(Arrays.asList("Amazon", "Google", "Facebook", "Microsoft", "Goldman Sachs"))
+                .constraints("- n == height.length\n- 1 <= n <= 2 * 10^4\n- 0 <= height[i] <= 10^5")
+                .examples(List.of(Map.of("input", "height = [0,1,0,2,1,0,1,3,2,1,2,1]", "output", "6")))
+                .hints(Arrays.asList("Water at each index = min(maxLeft, maxRight) - height[i].", "Use two pointers from both ends.", "Track maxLeft and maxRight as you go."))
+                .solutionTemplate(Map.of("java", "class Solution {\n    public int trap(int[] height) {\n        \n    }\n}", "python", "class Solution:\n    def trap(self, height: List[int]) -> int:\n        pass"))
+                .timeComplexity("O(n)").spaceComplexity("O(1)")
+                .acceptanceRate(new BigDecimal("60.1"))
+                .build());
+
+        // Problem 20 - Word Search
+        problems.add(Problem.builder()
+                .title("Word Search")
+                .slug("word-search")
+                .description("Given an `m x n` grid of characters `board` and a string `word`, return `true` if `word` exists in the grid. The word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once.")
+                .difficulty(Problem.Difficulty.MEDIUM)
+                .category("Backtracking")
+                .tags(Arrays.asList("Array", "Backtracking", "Matrix"))
+                .companies(Arrays.asList("Amazon", "Google", "Facebook", "Microsoft"))
+                .constraints("- m == board.length\n- n = board[i].length\n- 1 <= m, n <= 6\n- 1 <= word.length <= 15")
+                .examples(List.of(Map.of("input", "board = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"ABCCED\"", "output", "true")))
+                .hints(Arrays.asList("Use DFS from each cell as starting point.", "Mark visited cells to avoid reuse.", "Backtrack when the path doesn't match."))
+                .solutionTemplate(Map.of("java", "class Solution {\n    public boolean exist(char[][] board, String word) {\n        \n    }\n}", "python", "class Solution:\n    def exist(self, board: List[List[str]], word: str) -> bool:\n        pass"))
+                .timeComplexity("O(m*n*4^L)").spaceComplexity("O(L)")
+                .acceptanceRate(new BigDecimal("41.2"))
+                .build());
+
         problemRepo.saveAll(problems);
         log.info("📚 Seeded {} problems.", problems.size());
     }
+
 
     private void seedBehavioralQuestions() {
         List<BehavioralQuestion> questions = new ArrayList<>();

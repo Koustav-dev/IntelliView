@@ -59,15 +59,14 @@ public class InterviewSession {
     @Column(name = "ai_feedback", columnDefinition = "TEXT")
     private String aiFeedback;
 
-    @ElementCollection
-    @CollectionTable(name = "session_improvement_areas", joinColumns = @JoinColumn(name = "session_id"))
-    @Column(name = "area")
+    // Native PostgreSQL TEXT[] — matches schema (improvement_areas TEXT[])
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "improvement_areas", columnDefinition = "text[]")
     @Builder.Default
     private List<String> improvementAreas = new ArrayList<>();
 
-    @ElementCollection
-    @CollectionTable(name = "session_strengths", joinColumns = @JoinColumn(name = "session_id"))
-    @Column(name = "strength")
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "strengths", columnDefinition = "text[]")
     @Builder.Default
     private List<String> strengths = new ArrayList<>();
 

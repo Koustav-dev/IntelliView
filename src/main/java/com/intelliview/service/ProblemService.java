@@ -8,7 +8,6 @@ import com.intelliview.repository.ProblemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -26,7 +26,6 @@ public class ProblemService {
     private final ProblemRepository problemRepo;
     private final CodeSubmissionRepository submissionRepo;
 
-    @Cacheable(value = "problems", key = "#page + '_' + #size + '_' + #difficulty + '_' + #company")
     public Page<ProblemDTO> getProblems(int page, int size, String difficulty,
                                          String company, String search, User currentUser) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
@@ -37,12 +36,13 @@ public class ProblemService {
                 Problem.Difficulty diff = Problem.Difficulty.valueOf(difficulty.toUpperCase());
                 problems = problemRepo.findByDifficultyAndIsActiveTrue(diff, pageable);
             } catch (IllegalArgumentException e) {
+                log.warn("Invalid difficulty filter '{}', returning all problems.", difficulty);
                 problems = problemRepo.findByIsActiveTrue(pageable);
             }
         } else if (company != null && !company.isBlank()) {
             problems = problemRepo.findByCompany(company, pageable);
         } else if (search != null && !search.isBlank()) {
-            problems = problemRepo.searchProblems(search, search, pageable);
+            problems = problemRepo.searchProblems(search, pageable);
         } else {
             problems = problemRepo.findByIsActiveTrue(pageable);
         }
@@ -52,13 +52,16 @@ public class ProblemService {
 
     public ProblemDTO getProblem(String slugOrId, User currentUser) {
         Problem problem;
-        try {
+        // Use regex to distinguish UUID from slug — avoids catching our own "not found" exception
+        boolean looksLikeUUID = slugOrId != null &&
+            slugOrId.matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
+        if (looksLikeUUID) {
             UUID id = UUID.fromString(slugOrId);
             problem = problemRepo.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Problem not found"));
-        } catch (IllegalArgumentException e) {
+                    .orElseThrow(() -> new NoSuchElementException("Problem not found with id: " + slugOrId));
+        } else {
             problem = problemRepo.findBySlug(slugOrId)
-                    .orElseThrow(() -> new IllegalArgumentException("Problem not found"));
+                    .orElseThrow(() -> new NoSuchElementException("Problem not found with slug: " + slugOrId));
         }
         return mapToDTO(problem, currentUser);
     }

@@ -33,15 +33,14 @@ public class CompanyPattern {
     @Column(name = "interview_rounds", columnDefinition = "jsonb")
     private List<Map<String, Object>> interviewRounds;
 
-    @ElementCollection
-    @CollectionTable(name = "company_languages", joinColumns = @JoinColumn(name = "company_id"))
-    @Column(name = "language")
+    // Native PostgreSQL TEXT[] arrays — matches schema
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "preferred_languages", columnDefinition = "text[]")
     @Builder.Default
     private List<String> preferredLanguages = new ArrayList<>();
 
-    @ElementCollection
-    @CollectionTable(name = "company_focus_areas", joinColumns = @JoinColumn(name = "company_id"))
-    @Column(name = "area")
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "focus_areas", columnDefinition = "text[]")
     @Builder.Default
     private List<String> focusAreas = new ArrayList<>();
 
@@ -49,9 +48,8 @@ public class CompanyPattern {
     @Column(name = "difficulty_distribution", columnDefinition = "jsonb")
     private Map<String, Integer> difficultyDistribution;
 
-    @ElementCollection
-    @CollectionTable(name = "company_tips", joinColumns = @JoinColumn(name = "company_id"))
-    @Column(name = "tip", columnDefinition = "TEXT")
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "tips", columnDefinition = "text[]")
     @Builder.Default
     private List<String> tips = new ArrayList<>();
 

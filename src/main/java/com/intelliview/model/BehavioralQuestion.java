@@ -26,9 +26,9 @@ public class BehavioralQuestion {
     @Column(length = 100)
     private String category;
 
-    @ElementCollection
-    @CollectionTable(name = "bq_companies", joinColumns = @JoinColumn(name = "question_id"))
-    @Column(name = "company")
+    // Native PostgreSQL TEXT[] — matches the schema directly
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "companies", columnDefinition = "text[]")
     @Builder.Default
     private List<String> companies = new ArrayList<>();
 
@@ -39,9 +39,8 @@ public class BehavioralQuestion {
     @Column(name = "sample_answer", columnDefinition = "TEXT")
     private String sampleAnswer;
 
-    @ElementCollection
-    @CollectionTable(name = "bq_keywords", joinColumns = @JoinColumn(name = "question_id"))
-    @Column(name = "keyword")
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "keywords", columnDefinition = "text[]")
     @Builder.Default
     private List<String> keywords = new ArrayList<>();
 

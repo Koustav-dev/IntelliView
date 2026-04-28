@@ -66,10 +66,10 @@ public class CodeSubmission {
     @Column(name = "ai_code_review", columnDefinition = "jsonb")
     private Map<String, Object> aiCodeReview;
 
-    @Column(name = "time_complexity_detected", length = 100)
+    @Column(name = "time_complexity_detected", length = 500)
     private String timeComplexityDetected;
 
-    @Column(name = "space_complexity_detected", length = 100)
+    @Column(name = "space_complexity_detected", length = 500)
     private String spaceComplexityDetected;
 
     @Column(name = "code_quality_score")

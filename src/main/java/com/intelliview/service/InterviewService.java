@@ -96,11 +96,20 @@ public class InterviewService {
         List<BehavioralQuestion> questions;
         if (company != null && !company.isBlank()) {
             questions = bqRepo.findByCompany(company);
+            // Fallback to random if no company-specific questions found
+            if (questions.isEmpty()) {
+                questions = bqRepo.findRandomQuestions(count);
+            }
         } else if (category != null && !category.isBlank()) {
             questions = bqRepo.findByCategoryAndIsActiveTrue(category, PageRequest.of(0, count)).getContent();
+            if (questions.isEmpty()) {
+                questions = bqRepo.findRandomQuestions(count);
+            }
         } else {
             questions = bqRepo.findRandomQuestions(count);
         }
+        // Limit to requested count
+        if (questions.size() > count) questions = questions.subList(0, count);
 
         return questions.stream().map(q -> {
             Map<String, Object> map = new HashMap<>();
@@ -108,10 +117,11 @@ public class InterviewService {
             map.put("question", q.getQuestion());
             map.put("category", q.getCategory());
             map.put("difficulty", q.getDifficulty());
-            map.put("companies", q.getCompanies());
+            map.put("companies", q.getCompanies() != null ? q.getCompanies() : List.of());
             return map;
         }).collect(Collectors.toList());
     }
+
 
     public Map<String, Object> submitBehavioralResponse(User user, UUID questionId,
                                                          UUID sessionId, String responseText) {
@@ -158,27 +168,49 @@ public class InterviewService {
     public Map<String, Object> getMockInterviewKit(String company, String difficulty, int problemCount) {
         Map<String, Object> kit = new HashMap<>();
 
-        // Get problems
-        List<Problem> problems = problemRepo.findByDifficultyAndCompany(
-                Problem.Difficulty.valueOf(difficulty.toUpperCase()), company,
-                PageRequest.of(0, problemCount)
-        );
+        // Get problems — try company-specific first, fallback to difficulty-only
+        List<Problem> problems = new ArrayList<>();
+        if (company != null && !company.isBlank()) {
+            try {
+                problems = problemRepo.findByDifficultyAndCompany(
+                        difficulty.toUpperCase(), company, problemCount
+                );
+            } catch (Exception e) {
+                log.warn("Could not fetch company-specific problems for {}: {}", company, e.getMessage());
+            }
+        }
+        // Fallback: if no company-specific problems found, use difficulty filter
+        if (problems.isEmpty()) {
+            try {
+                Problem.Difficulty diff = Problem.Difficulty.valueOf(difficulty.toUpperCase());
+                problems = problemRepo.findByDifficultyAndIsActiveTrue(diff, PageRequest.of(0, problemCount)).getContent();
+            } catch (Exception e) {
+                log.warn("Fallback problem fetch failed: {}", e.getMessage());
+                problems = problemRepo.findByIsActiveTrue(PageRequest.of(0, problemCount)).getContent();
+            }
+        }
+
         kit.put("codingProblems", problems.stream().map(this::mapProblemBrief).collect(Collectors.toList()));
 
         // Get behavioral questions
         kit.put("behavioralQuestions", getBehavioralQuestions(company, null, 3));
 
-        // Get company info
-        kit.put("company", company);
+        // Kit metadata
+        kit.put("company", company != null ? company : "General");
         kit.put("difficulty", difficulty);
         kit.put("estimatedDuration", "60-90 minutes");
 
         // AI-generated tips
-        String tips = groqAIService.chat(
-            "You are an expert technical interviewer.",
-            "Give 5 specific tips for interviewing at " + company + " in bullet points. Be concise."
-        );
-        kit.put("tips", tips);
+        try {
+            String tips = groqAIService.chat(
+                "You are an expert technical interviewer.",
+                "Give 5 specific tips for interviewing at " + (company != null ? company : "top tech companies") + " in bullet points. Be concise."
+            );
+            kit.put("tips", tips);
+        } catch (Exception e) {
+            log.warn("Could not generate AI tips: {}", e.getMessage());
+            kit.put("tips", "• Practice DSA problems daily\n• Study system design fundamentals\n• Prepare STAR stories for behavioral questions\n• Review time/space complexity\n• Mock interview with peers");
+        }
 
         return kit;
     }
@@ -190,6 +222,13 @@ public class InterviewService {
                 weeks,
                 null
         );
+    }
+
+    /**
+     * Direct AI analysis for AI-generated questions that have no DB record.
+     */
+    public Map<String, Object> analyzeResponseDirectly(String questionText, String responseText) {
+        return groqAIService.analyzeBehavioralResponse(questionText, responseText, null);
     }
 
     private void extractScores(BehavioralResponse response, Map<String, Object> analysis) {

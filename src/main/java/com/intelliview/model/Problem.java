@@ -38,15 +38,14 @@ public class Problem {
     @Column(length = 100)
     private String category;
 
-    @ElementCollection
-    @CollectionTable(name = "problem_tags", joinColumns = @JoinColumn(name = "problem_id"))
-    @Column(name = "tag")
+    // Use native PostgreSQL TEXT[] array — stored in the problems table directly
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "tags", columnDefinition = "text[]")
     @Builder.Default
     private List<String> tags = new ArrayList<>();
 
-    @ElementCollection
-    @CollectionTable(name = "problem_companies", joinColumns = @JoinColumn(name = "problem_id"))
-    @Column(name = "company")
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "companies", columnDefinition = "text[]")
     @Builder.Default
     private List<String> companies = new ArrayList<>();
 
@@ -57,9 +56,8 @@ public class Problem {
     @Column(columnDefinition = "jsonb")
     private List<Map<String, Object>> examples;
 
-    @ElementCollection
-    @CollectionTable(name = "problem_hints", joinColumns = @JoinColumn(name = "problem_id"))
-    @Column(name = "hint")
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "hints", columnDefinition = "text[]")
     @Builder.Default
     private List<String> hints = new ArrayList<>();
 

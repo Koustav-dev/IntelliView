@@ -36,7 +36,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final UserDetailsService userDetailsService;
 
-    @Value("${app.cors.allowed-origins}")
+    @Value("${app.cors.allowed-origins:http://localhost:3000,http://localhost:5173}")
     private List<String> allowedOrigins;
 
     @Bean
@@ -51,6 +51,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/auth/forgot-password", "/auth/reset-password").permitAll()
                 .requestMatchers(HttpMethod.GET, "/problems/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/companies/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/interviews/mock-kit").permitAll()
+                .requestMatchers(HttpMethod.GET, "/interviews/behavioral/questions").permitAll()
+                .requestMatchers(HttpMethod.POST, "/interviews/behavioral/generate-question").permitAll()
                 .requestMatchers(HttpMethod.GET, "/health", "/actuator/health").permitAll()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/ws/**").permitAll()
