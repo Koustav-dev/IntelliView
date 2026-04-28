@@ -36,8 +36,8 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final UserDetailsService userDetailsService;
 
-    @Value("${app.cors.allowed-origins:http://localhost:3000,http://localhost:5173}")
-    private List<String> allowedOrigins;
+    @Value("${app.cors.allowed-origin-patterns:http://localhost:3000,http://localhost:5173}")
+    private List<String> allowedOriginPatterns;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -74,7 +74,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(allowedOrigins);
+        configuration.setAllowedOriginPatterns(allowedOriginPatterns);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setExposedHeaders(List.of("Authorization"));
